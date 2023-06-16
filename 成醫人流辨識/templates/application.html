@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>人流辨識</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 1300px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+
+    h1 {
+      margin-top: 0;
+      color: #1478e8;
+    }
+
+    #video-container {
+      text-align: center;
+      margin-bottom: 20px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      padding: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+      background-color: #fff;
+      max-width: 100%;
+    }
+
+    #video-player {
+      width: 100%;
+      height: 0 auto;
+      max-width: 100%;
+      max-height: 0 auto;
+    }
+
+    .footer {
+      background-color: #f2f2f2;
+      padding: 20px;
+      text-align: center;
+    }
+
+    .footer button {
+      padding: 10px 20px;
+      margin: 5px;
+      font-size: 16px;
+      border-radius: 5px;
+      border: none;
+      background-color: #1478e8;
+      color: #fff;
+    }
+
+    .sidebar {
+      background-color: #f2f2f2;
+      padding: 10px;
+      text-align: right;
+      height: 100%;
+      width: 200px; /* 调整侧边栏宽度 */
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.2);
+    }
+
+    .sidebar-info {
+      margin-bottom: 10px;
+      color: #888;
+      font-size: 16px;
+    }
+
+    .sidebar-info span {
+      font-weight: bold;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Welcome</h1>
+    <h2>AIot - Internet of Things</h2>
+
+    <div class="row">
+      <div class="col-md-8">
+        <div id="video-container">
+          <div id="video-player">
+            <!-- 在这里插入您的视频播放器 -->
+            <img src="{{ url_for('video_feed') }}">
+          </div>
+        </div>
+
+        <div class="footer">
+          <button type="button">歷史紀錄</button>
+          <button type="button">擁擠程度</button>
+          <button type="button">通報</button>
+          <button type="button">基本設定</button>
+        </div>
+      </div>
+
+      <div class="col-md-4">
+        <div class="sidebar">
+          <div class="sidebar-info">
+            <span>時間:</span> <span id="time">{{ current_time }}</span>
+          </div>
+          <div class="sidebar-info">
+            <span>偵測人數:</span>
+            <span id="people-count" style="border: 1px solid #1478e8; padding: 2px 5px; border-radius: 5px; font-size: 16px;"></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script>
+    var source = new EventSource('/get_people_count');
+
+    source.onmessage = function(event) {
+        var data = event.data;
+        // 更新页面上的人数显示
+        document.getElementById('people-count').innerText = data;
+    };
+  </script>
+</body>
+</html>

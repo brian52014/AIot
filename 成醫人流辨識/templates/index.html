@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>人流辨識</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f2f2f2;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 400px;
+      margin: 0 auto;
+      background-color: #f2f8ff;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+      text-align: center;
+    }
+
+    h1 {
+      margin-top: 0;
+      color: #1478e8;
+    }
+
+    h2 {
+      color: #888;
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+      background-color: #fff;
+      padding: 10px;
+      border-radius: 5px;
+      position: relative;
+    }
+
+    .form-group label {
+      display: block;
+      text-align: left;
+      font-weight: bold;
+      color: #1478e8;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 3px;
+    }
+
+    .form-group span {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+    }
+
+    .button-group {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .button-group button {
+      padding: 10px 20px;
+      margin-right: 10px;
+      background-color: #1478e8;
+      color: #fff;
+      border: none;
+      border-radius: 3px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Welcome</h1>
+    <h2>AIot - Internet of Things</h2>
+    <form id="loginForm" onsubmit="startApplication()" action="/application" method="post">
+      <div class="form-group">
+        <label for="scale">人物尺度:</label>
+        <select id="scale" required class="form-control" name="scale">
+          <option value="大">大</option>
+          <option value="小">小</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="location">辨識地點:</label>
+        <input type="text" id="location" required class="form-control" name="locate"/>
+      </div>
+      <div class="form-group">
+        <label for="number">場域大小:</label>
+        <div class="input-group">
+          <input type="text" id="number" required class="form-control" name="area"/>
+          <div class="input-group-append">
+            <span class="input-group-text">m²</span>
+          </div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label for="rtsp">RTSP連結:</label>
+        <textarea id="rtsp" required class="form-control" name="rtsp"></textarea>
+      </div>
+      
+      <div class="button-group">
+        <button type="submit" class="btn btn-primary">開始</button>
+        <button type="button" onclick="cancelLogin()" class="btn btn-secondary">取消</button>
+      </div>
+      
+    </form>
+  </div>
+
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <script>
+    function cancelLogin() {
+      document.getElementById("loginForm").reset();
+    }
+
+    function startApplication() {
+      var datetime = document.getElementById("scale").value;
+      var location = document.getElementById("location").value;
+      var number = document.getElementById("number").value;
+      var rtsp = document.getElementById("rtsp").value;
+
+      // 将表单数据传递到新页面
+      sessionStorage.setItem("scale", datetime);
+      sessionStorage.setItem("location", location);
+      sessionStorage.setItem("number", number);
+      sessionStorage.setItem("rtsp", rtsp);
+
+      // 跳转到新页面
+      window.location.href = "/application";
+    }
+  </script>
+</body>
+</html>
