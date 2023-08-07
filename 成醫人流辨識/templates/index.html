@@ -123,20 +123,20 @@
     }
 
     function startApplication() {
-      var datetime = document.getElementById("scale").value;
-      var location = document.getElementById("location").value;
-      var number = document.getElementById("number").value;
-      var rtsp = document.getElementById("rtsp").value;
+    var datetime = document.getElementById("scale").value;
+    var location = document.getElementById("location").value;
+    var number = document.getElementById("number").value;
+    var rtsp = document.getElementById("rtsp").value;
 
-      // 将表单数据传递到新页面
-      sessionStorage.setItem("scale", datetime);
-      sessionStorage.setItem("location", location);
-      sessionStorage.setItem("number", number);
-      sessionStorage.setItem("rtsp", rtsp);
+    // 将表单数据传递到表单中
+    sessionStorage.setItem("scale", datetime);
+    sessionStorage.setItem("location", location);
+    sessionStorage.setItem("number", number);
+    sessionStorage.setItem("rtsp", rtsp);
 
-      // 跳转到新页面
-      window.location.href = "/application";
-    }
+    // 提交表单
+    document.getElementById("loginForm").submit();
+  }
   </script>
 </body>
 </html>
