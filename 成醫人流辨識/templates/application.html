@@ -13,7 +13,7 @@
     }
 
     .container {
-      max-width: 1300px;
+      max-width: 1650px;
       margin: 0 auto;
       padding: 20px;
     }
@@ -61,7 +61,7 @@
       background-color: #f2f2f2;
       padding: 10px;
       text-align: right;
-      height: 100%;
+      height: 84%;
       width: 200px; /* 调整侧边栏宽度 */
       border: 1px solid #ccc;
       border-radius: 5px;
@@ -71,11 +71,30 @@
     .sidebar-info {
       margin-bottom: 10px;
       color: #888;
-      font-size: 16px;
+      font-size: 20px;
     }
 
     .sidebar-info span {
       font-weight: bold;
+    }
+    #status-text {
+      font-size: 30px; /* 修改字体大小为 24px，您可以根据需要进行调整 */
+      margin-top: -170px; /* 向上移动文本，与圆形对齐 */
+    }
+  
+    /* 修改密度状态的容器样式，使用 Flexbox 布局 */
+    #density-status {
+      display: flex;
+      align-items: center; /* 垂直居中 */
+    }
+  
+    /* 修改密度状态的圆形大小 */
+    #status-circle {
+      width: 40px; /* 修改圆形宽度，您可以根据需要进行调整 */
+      height: 40px; /* 修改圆形高度，您可以根据需要进行调整 */
+      border-radius: 50%; /* 使圆形具有圆形外观 */
+      margin-right: 10px; /* 添加右边距，以与字体有间距 */
+      margin-top: -170px; /* 向上移动圆形，您可以根据需要进行调整 */
     }
   </style>
 </head>
@@ -94,14 +113,21 @@
         </div>
 
         <div class="footer">
-          <button type="button">歷史紀錄</button>
-          <button type="button">擁擠程度</button>
-          <button type="button">通報</button>
-          <button type="button">基本設定</button>
+          <form method="post">
+            <button type="button">歷史紀錄</button>
+            <!-- <button type="button">擁擠程度</button> -->
+            <!-- 在按钮列表中添加通报按钮 -->
+            <button type="button" name="notify_button" value="notify">通報</button>
+            <button type="button">基本設定</button>
+            <button type="button" name="screenshot_button">截圖</button>
+            <button type="button" name="start_recording_button">開始錄影</button>
+            <button type="button" name="stop_recording_button">停止錄影</button>
+          
         </div>
       </div>
 
       <div class="col-md-4">
+        <!-- 在 <div class="sidebar"> 中添加一个指示灯的容器 -->
         <div class="sidebar">
           <div class="sidebar-info">
             <span>時間:</span> <span id="current_time1">{{ current_time1 }}</span>
@@ -113,9 +139,50 @@
           <div class="sidebar-info">
             <span>密度:</span> <span id="area">{{ area }}</span>
           </div>
+          
+          <!-- 新增一个用于显示密度状态的指示灯 -->
+          <div id="density-status" style="margin-top: 500px;">
+            <div id="status-circle"></div>
+            <span id="status-text">Safe</span>
+          </div>
+          
         </div>
       </div>
+      <script>
+        // 获取密度元素
+        var areaElement = document.getElementById('area');
+        var statusCircle = document.getElementById('status-circle');
+        var statusText = document.getElementById('status-text');
+    
+        // 更新状态函数
+        function updateStatus(density) {
+          if (density < 5) {
+            statusText.innerText = 'Safe';
+            statusCircle.style.backgroundColor = 'green';
+          } else if (density >= 5 && density < 7) {
+            statusText.innerText = 'Crowd';
+            statusCircle.style.backgroundColor = 'orange';
+          } else {
+            statusText.innerText = 'Dangerous';
+            statusCircle.style.backgroundColor = 'red';
+          }
+        }
+        
+        // 初始化状态
+        updateStatus(parseInt(areaElement.innerText)); // 使用密度的初始值
+    
+        // 使用EventSource更新状态
+        var source = new EventSource('/get_people_count');
+        source.onmessage = function(event) {
+          var data = parseInt(event.data);
+          // 更新页面上的人数显示
+          document.getElementById('people-count').innerText = data;
+          // 更新状态
+          updateStatus(data);
+        };
+      </script>
     </div>
+    
   </div>
 
   <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
@@ -130,5 +197,29 @@
         document.getElementById('people-count').innerText = data;
     };
   </script>
+  <script>
+        // 使用 JavaScript 发送截图请求
+    document.querySelector('button[name="screenshot_button"]').addEventListener('click', function() {
+      fetch('/take_screenshot', {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+      })
+      .then(response => response.json())
+      .then(data => {
+          if (data.error) {
+              console.error('截图失败：', data.error);
+          } else {
+              console.log('截图完成，保存在：', data.screenshot_path);
+          }
+      })
+      .catch(error => {
+          console.error('发生错误：', error);
+      });
+    });
+
+  </script>
+
 </body>
 </html>
